@@ -1,0 +1,72 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="identicon.IdenticonGeneratorController"
+      alignment="CENTER"
+      spacing="32">
+
+    <padding>
+        <Insets topRightBottomLeft="32"/>
+    </padding>
+
+
+    <VBox fx:id="previewVBox" alignment="CENTER">
+        <ImageView fx:id="identiconImageView"/>
+    </VBox>
+
+
+    <GridPane hgap="16"
+              vgap="8"
+              alignment="CENTER">
+
+        <Label text="Input" GridPane.rowIndex="0"/>
+        <TextField fx:id="inputTextField"
+                   GridPane.rowIndex="0"
+                   GridPane.columnIndex="1"/>
+
+
+        <Label text="Hashing" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="hashingAlgorithmsComboBox"
+                  GridPane.rowIndex="1"
+                  GridPane.columnIndex="1"/>
+
+
+        <Label text="Foreground" GridPane.rowIndex="2"/>
+        <HBox spacing="8"
+              alignment="CENTER_LEFT"
+              GridPane.rowIndex="2"
+              GridPane.columnIndex="1">
+            <ColorPicker fx:id="foregroundColorPicker"/>
+            <CheckBox fx:id="foregroundCheckBox"/>
+        </HBox>
+
+
+        <Label text="Background" GridPane.rowIndex="3"/>
+        <HBox spacing="8"
+              alignment="CENTER_LEFT"
+              GridPane.rowIndex="3"
+              GridPane.columnIndex="1">
+            <ColorPicker fx:id="backgroundColorPicker"/>
+            <CheckBox fx:id="backgroundCheckBox"/>
+        </HBox>
+
+
+        <Label text="Quality" GridPane.rowIndex="4"/>
+        <TextField fx:id="qualityTextField"
+                   GridPane.rowIndex="4"
+                   GridPane.columnIndex="1"/>
+
+
+        <Button fx:id="saveButton"
+                text="Save"
+                GridPane.rowIndex="5"
+                GridPane.columnSpan="2"
+                prefWidth="300"
+                onAction="#handleSaveButtonOnAction"/>
+
+    </GridPane>
+
+</VBox>
