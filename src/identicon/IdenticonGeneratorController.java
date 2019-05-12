@@ -25,8 +25,11 @@ import java.security.NoSuchAlgorithmException;
 
 public class IdenticonGeneratorController {
 
+    private final int BORDER_SIZE   = 1;
     private final int ORIGINAL_SIZE = 5;
-    private final int PREVIEW_SIZE = 250;
+    private final int TOTAL_SIZE    = ORIGINAL_SIZE + 2 * BORDER_SIZE;
+    private final int PREVIEW_SIZE  = 250;
+
     private BufferedImage identicon;
 
     @FXML public TextField inputTextField;
@@ -139,18 +142,27 @@ public class IdenticonGeneratorController {
         int[] background = new int[]{r, g, b, a};
 
 
-        // Generate Identicon
-
-        BufferedImage identicon = new BufferedImage(ORIGINAL_SIZE, ORIGINAL_SIZE, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage identicon = new BufferedImage(TOTAL_SIZE, TOTAL_SIZE, BufferedImage.TYPE_INT_ARGB);
         WritableRaster raster = identicon.getRaster();
 
+        // Draw Border
+        for (int x = 0; x < TOTAL_SIZE; x++) {
+            for (int y = 0; y < TOTAL_SIZE; y++) {
+                if (x == 0 || x == TOTAL_SIZE - 1 ||
+                    y == 0 || y == TOTAL_SIZE - 1) {
+                    raster.setPixel(x, y, background);
+                }
+            }
+        }
+
+        // Draw Identicon
         for (int x = 0; x < ORIGINAL_SIZE; x++) {
             int i = x < 3 ? x : 4 - x;
             for (int y = 0; y < ORIGINAL_SIZE; y++) {
                 if ((hashedText[i] >> y & 1) == 1) {
-                    raster.setPixel(x, y, foreground);
+                    raster.setPixel(x + 1, y + 1, foreground);
                 } else {
-                    raster.setPixel(x, y, background);
+                    raster.setPixel(x + 1, y + 1, background);
                 }
             }
         }
@@ -160,10 +172,12 @@ public class IdenticonGeneratorController {
     }
 
     private Image scaleImage(BufferedImage image, int scaleSize) {
+
         BufferedImage scaledImage = new BufferedImage(scaleSize, scaleSize, BufferedImage.TYPE_INT_ARGB);
 
         AffineTransform transform = new AffineTransform();
-        transform.scale(scaleSize / ORIGINAL_SIZE, scaleSize / ORIGINAL_SIZE);
+        int scale = scaleSize / TOTAL_SIZE;
+        transform.scale(scale, scale);
 
         AffineTransformOp transformOp = new AffineTransformOp(transform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
         scaledImage = transformOp.filter(image, scaledImage);
