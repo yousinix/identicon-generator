@@ -70,8 +70,8 @@ public class IdenticonGeneratorController {
         foregroundColorPicker.setOnAction(event -> updatePreview());
         backgroundColorPicker.setOnAction(event -> updatePreview());
 
-        foregroundCheckBox.selectedProperty().addListener(new CheckBoxChangeListener(foregroundColorPicker));
-        backgroundCheckBox.selectedProperty().addListener(new CheckBoxChangeListener(backgroundColorPicker));
+        foregroundCheckBox.selectedProperty().addListener(new CheckBoxChangeListener(foregroundColorPicker, Color.WHITE));
+        backgroundCheckBox.selectedProperty().addListener(new CheckBoxChangeListener(backgroundColorPicker, Color.BLACK));
 
         qualityTextField.textProperty().addListener(new NumbersOnlyChangeListener());
 
@@ -188,15 +188,17 @@ public class IdenticonGeneratorController {
     private class CheckBoxChangeListener implements ChangeListener<Boolean> {
 
         ColorPicker colorPicker;
+        Color defaultColor;
 
-        public CheckBoxChangeListener(ColorPicker colorPicker) {
+        CheckBoxChangeListener(ColorPicker colorPicker, Color defaultColor) {
             this.colorPicker = colorPicker;
+            this.defaultColor = defaultColor;
         }
 
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             if (newValue) {
-                colorPicker.setValue(Color.WHITE);
+                colorPicker.setValue(defaultColor);
                 colorPicker.setDisable(false);
             } else {
                 colorPicker.setValue(null);
