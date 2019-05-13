@@ -137,6 +137,7 @@ public class Identicon {
     private void drawIdenticon() {
         for (int x = 0; x < identiconPixels; x++) {
             int i = x < 3 ? x : identiconPixels - 1 - x;
+            i = i >= hashedText.length ? i % hashedText.length : i;
             for (int y = 0; y < identiconPixels; y++) {
                 if ((hashedText[i] >> y & 1) == 1) {
                     raster.setPixel(x + borderPixels, y + borderPixels, foregroundRGBA);
