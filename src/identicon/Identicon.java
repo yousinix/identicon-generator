@@ -13,6 +13,13 @@ import java.security.NoSuchAlgorithmException;
 
 public class Identicon {
 
+    private final String DEFAULT_TEXT = "";
+    private final String DEFAULT_HASHING_ALGORITHM = "MD5";
+    private final int DEFAULT_BORDER_PIXELS = 1;
+    private final int DEFAULT_IDENTICON_PIXELS = 5;
+    private final int DEFAULT_IMAGE_PIXELS = 250;
+    private final int DEFAULT_RGBA = 255;
+
     private Color foreground;
     private int[] foregroundRGBA;
 
@@ -43,12 +50,8 @@ public class Identicon {
     }
 
     private Identicon() {
-        // Default Values
-        text             = "YoussefRaafatNasry";
-        hashingAlgorithm = "SHA-256";
-        borderPixels     = 1;
-        identiconPixels  = 5;
-        imagePixels      = 250;
+        // Generate White Identicon & Image
+        foreground = background = Color.WHITE;
         generateIdenticon();
         generateImage();
     }
@@ -57,16 +60,24 @@ public class Identicon {
     //// Public Methods ////
 
     public void generateIdenticon() {
+
+        determineText();
+        determineHashingAlgorithm();
         hashText();
-        determineForeground();
-        determineBackground();
-        determineDimensions();
+
+        determineIdenticonDimensions();
         initIdenticon();
+
+        determineBackground();
+        determineForeground();
         drawBorder();
         drawIdenticon();
+
     }
 
     public void generateImage() {
+
+        determineImageDimensions();
 
         BufferedImage scaledImage = new BufferedImage(imagePixels, imagePixels, BufferedImage.TYPE_INT_ARGB);
 
@@ -84,6 +95,14 @@ public class Identicon {
 
     //// Private Methods ////
 
+    private void determineText() {
+        text = text == null ? DEFAULT_TEXT : text;
+    }
+
+    private void determineHashingAlgorithm() {
+        hashingAlgorithm = hashingAlgorithm == null ? DEFAULT_HASHING_ALGORITHM : hashingAlgorithm;
+    }
+
     private void hashText() {
         MessageDigest messageDigest = null;
         try {
@@ -94,32 +113,32 @@ public class Identicon {
         }
         hashedText = messageDigest.digest(text.getBytes());
     }
-
-    private void determineForeground() {
-        int r = foreground == null ? hashedText[0] & 255 : (int) (foreground.getRed() * 255);
-        int g = foreground == null ? hashedText[1] & 255 : (int) (foreground.getGreen() * 255);
-        int b = foreground == null ? hashedText[2] & 255 : (int) (foreground.getBlue() * 255);
-        int a = foreground == null ? 255 : (int) (foreground.getOpacity() * 255);
-        foregroundRGBA = new int[]{r, g, b, a};
-    }
-
-    private void determineBackground() {
-        int r = background == null ? 255 : (int) (background.getRed() * 255);
-        int g = background == null ? 255 : (int) (background.getGreen() * 255);
-        int b = background == null ? 255 : (int) (background.getBlue() * 255);
-        int a = background == null ? 255 : (int) (background.getOpacity() * 255);
-        backgroundRGBA = new int[]{r, g, b, a};
-    }
-
-    private void determineDimensions() {
-        identiconPixels = identiconPixels == 0 ? 5 : identiconPixels;
-        borderPixels    = borderPixels    == 0 ? 1 : borderPixels;
+    
+    private void determineIdenticonDimensions() {
+        identiconPixels = identiconPixels <= 0 ? DEFAULT_IDENTICON_PIXELS : identiconPixels;
+        borderPixels    = borderPixels    <= 0 ? DEFAULT_BORDER_PIXELS : borderPixels;
         totalPixels     = identiconPixels + 2 * borderPixels;
     }
 
     private void initIdenticon() {
         identicon = new BufferedImage(totalPixels, totalPixels, BufferedImage.TYPE_INT_ARGB);
         raster = identicon.getRaster();
+    }
+
+    private void determineForeground() {
+        int r = foreground == null ? hashedText[0] & DEFAULT_RGBA : (int) (foreground.getRed() * 255);
+        int g = foreground == null ? hashedText[1] & DEFAULT_RGBA : (int) (foreground.getGreen() * 255);
+        int b = foreground == null ? hashedText[2] & DEFAULT_RGBA : (int) (foreground.getBlue() * 255);
+        int a = foreground == null ? DEFAULT_RGBA : (int) (foreground.getOpacity() * 255);
+        foregroundRGBA = new int[]{r, g, b, a};
+    }
+
+    private void determineBackground() {
+        int r = background == null ? DEFAULT_RGBA : (int) (background.getRed() * 255);
+        int g = background == null ? DEFAULT_RGBA : (int) (background.getGreen() * 255);
+        int b = background == null ? DEFAULT_RGBA : (int) (background.getBlue() * 255);
+        int a = background == null ? DEFAULT_RGBA : (int) (background.getOpacity() * 255);
+        backgroundRGBA = new int[]{r, g, b, a};
     }
 
     private void drawBorder() {
@@ -148,6 +167,9 @@ public class Identicon {
         }
     }
 
+    private void determineImageDimensions() {
+        imagePixels = imagePixels <= 0 ? DEFAULT_IMAGE_PIXELS : imagePixels;
+    }
 
     //// Getter and Setters ////
 
