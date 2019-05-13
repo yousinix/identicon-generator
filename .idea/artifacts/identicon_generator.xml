@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="identicon-generator">
+    <output-path>$PROJECT_DIR$/out/artifacts/identicon_generator</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="identicon.Main" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="Identicon Genrator" />
+        <option name="vendor" value="YoussefRaafatNasry" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="identicon_generator.jar">
+        <element id="module-output" name="identicon-generator" />
+      </element>
+    </root>
+  </artifact>
+</component>
