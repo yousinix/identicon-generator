@@ -27,42 +27,51 @@
                    GridPane.rowIndex="0"
                    GridPane.columnIndex="1"/>
 
+        <Label text="Border" GridPane.rowIndex="1"/>
+        <TextField fx:id="borderTextField"
+                   GridPane.rowIndex="1"
+                   GridPane.columnIndex="1"/>
 
-        <Label text="Hashing" GridPane.rowIndex="1"/>
+        <Label text="Pixels" GridPane.rowIndex="2"/>
+        <TextField fx:id="pixelsTextField"
+                   GridPane.rowIndex="2"
+                   GridPane.columnIndex="1"/>
+
+        <Label text="Hashing" GridPane.rowIndex="3"/>
         <ComboBox fx:id="hashingAlgorithmsComboBox"
-                  GridPane.rowIndex="1"
+                  GridPane.rowIndex="3"
                   GridPane.columnIndex="1"/>
 
-
-        <Label text="Foreground" GridPane.rowIndex="2"/>
+        <Label text="Foreground" GridPane.rowIndex="4"/>
         <HBox spacing="8"
               alignment="CENTER_LEFT"
-              GridPane.rowIndex="2"
+              GridPane.rowIndex="4"
               GridPane.columnIndex="1">
             <ColorPicker fx:id="foregroundColorPicker"/>
             <CheckBox fx:id="foregroundCheckBox"/>
         </HBox>
 
 
-        <Label text="Background" GridPane.rowIndex="3"/>
+        <Label text="Background" GridPane.rowIndex="5"/>
         <HBox spacing="8"
               alignment="CENTER_LEFT"
-              GridPane.rowIndex="3"
+              GridPane.rowIndex="5"
               GridPane.columnIndex="1">
             <ColorPicker fx:id="backgroundColorPicker"/>
             <CheckBox fx:id="backgroundCheckBox"/>
         </HBox>
 
 
-        <Label text="Quality" GridPane.rowIndex="4"/>
-        <TextField fx:id="qualityTextField"
-                   GridPane.rowIndex="4"
-                   GridPane.columnIndex="1"/>
+        <Separator GridPane.rowIndex="6" GridPane.columnSpan="2" />
 
+        <Label text="Quality" GridPane.rowIndex="7"/>
+        <TextField fx:id="qualityTextField"
+                   GridPane.rowIndex="7"
+                   GridPane.columnIndex="1"/>
 
         <Button fx:id="saveButton"
                 text="Save"
-                GridPane.rowIndex="5"
+                GridPane.rowIndex="8"
                 GridPane.columnSpan="2"
                 prefWidth="300"
                 onAction="#handleSaveButtonOnAction"/>

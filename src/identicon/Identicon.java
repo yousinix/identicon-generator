@@ -60,6 +60,7 @@ public class Identicon {
         hashText();
         determineForeground();
         determineBackground();
+        determineDimensions();
         initIdenticon();
         drawBorder();
         drawIdenticon();
@@ -110,8 +111,13 @@ public class Identicon {
         backgroundRGBA = new int[]{r, g, b, a};
     }
 
+    private void determineDimensions() {
+        identiconPixels = identiconPixels == 0 ? 5 : identiconPixels;
+        borderPixels    = borderPixels    == 0 ? 1 : borderPixels;
+        totalPixels     = identiconPixels + 2 * borderPixels;
+    }
+
     private void initIdenticon() {
-        totalPixels = identiconPixels + 2 * borderPixels;
         identicon = new BufferedImage(totalPixels, totalPixels, BufferedImage.TYPE_INT_ARGB);
         raster = identicon.getRaster();
     }

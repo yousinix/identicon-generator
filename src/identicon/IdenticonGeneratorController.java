@@ -18,6 +18,8 @@ public class IdenticonGeneratorController {
     private final int PREVIEW_SIZE = 250;
 
     @FXML public TextField inputTextField;
+    @FXML public TextField borderTextField;
+    @FXML public TextField pixelsTextField;
     @FXML public ComboBox<String> hashingAlgorithmsComboBox;
     @FXML public CheckBox foregroundCheckBox;
     @FXML public ColorPicker foregroundColorPicker;
@@ -55,16 +57,24 @@ public class IdenticonGeneratorController {
         inputTextField.textProperty()
                 .addListener((observable, oldValue, newValue) -> updatePreview());
 
+        borderTextField.textProperty()
+                .addListener(new NumbersOnlyChangeListener(borderTextField, true, updateStrategy));
+
+        pixelsTextField.textProperty()
+                .addListener(new NumbersOnlyChangeListener(pixelsTextField, true, updateStrategy));
+
         foregroundColorPicker.setOnAction(event -> updatePreview());
+
         backgroundColorPicker.setOnAction(event -> updatePreview());
 
         foregroundCheckBox.selectedProperty()
                 .addListener(new CheckBoxChangeListener(foregroundColorPicker, Color.WHITE, updateStrategy));
+
         backgroundCheckBox.selectedProperty()
                 .addListener(new CheckBoxChangeListener(backgroundColorPicker, Color.BLACK, updateStrategy));
 
         qualityTextField.textProperty()
-                .addListener(new NumbersOnlyChangeListener(qualityTextField));
+                .addListener(new NumbersOnlyChangeListener(qualityTextField, false, updateStrategy));
 
     }
 
@@ -96,8 +106,10 @@ public class IdenticonGeneratorController {
         identicon.setHashingAlgorithm(hashingAlgorithmsComboBox.getValue());
         identicon.setForeground(foregroundColorPicker.getValue());
         identicon.setBackground(backgroundColorPicker.getValue());
-        identicon.setIdenticonPixels(5);
-        identicon.setBorderPixels(1);
+        String border = borderTextField.getText();
+        identicon.setBorderPixels(border.equals("") ? 0 : Integer.parseInt(border));
+        String pixels = pixelsTextField.getText();
+        identicon.setIdenticonPixels(pixels.equals("") ? 0 : Integer.parseInt(pixels));
         identicon.generateIdenticon();
 
         identicon.setImagePixels(PREVIEW_SIZE);
