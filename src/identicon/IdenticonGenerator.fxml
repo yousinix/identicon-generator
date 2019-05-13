@@ -13,7 +13,7 @@
     </padding>
 
 
-    <VBox fx:id="previewVBox" alignment="CENTER">
+    <VBox alignment="CENTER">
         <ImageView fx:id="identiconImageView"/>
     </VBox>
 

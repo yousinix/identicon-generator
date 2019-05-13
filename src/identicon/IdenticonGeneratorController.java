@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
@@ -25,10 +24,10 @@ import java.security.NoSuchAlgorithmException;
 
 public class IdenticonGeneratorController {
 
-    private final int BORDER_SIZE   = 1;
-    private final int ORIGINAL_SIZE = 5;
-    private final int TOTAL_SIZE    = ORIGINAL_SIZE + 2 * BORDER_SIZE;
-    private final int PREVIEW_SIZE  = 250;
+    private final int BORDER_SIZE   = 1;                               // Border Size: 1px
+    private final int ORIGINAL_SIZE = 5;                               // Identicon Size: 5px x 5px
+    private final int TOTAL_SIZE    = ORIGINAL_SIZE + 2 * BORDER_SIZE; // Generated Identicon Size: 7px x 7px
+    private final int PREVIEW_SIZE  = 250;                             // PREVIEW Size: 250px x 250
 
     private BufferedImage identicon;
 
@@ -40,15 +39,14 @@ public class IdenticonGeneratorController {
     @FXML public ColorPicker backgroundColorPicker;
     @FXML public TextField qualityTextField;
     @FXML public Button saveButton;
-    @FXML public VBox previewVBox;
     @FXML public ImageView identiconImageView;
 
     @FXML
     public void initialize() {
 
         // Set Preview Dimensions
-        previewVBox.setPrefHeight(PREVIEW_SIZE);
-        previewVBox.setPrefWidth(PREVIEW_SIZE);
+        identiconImageView.setFitHeight(PREVIEW_SIZE);
+        identiconImageView.setFitWidth(PREVIEW_SIZE);
 
         // Initial Values
         hashingAlgorithmsComboBox.setItems(FXCollections.observableArrayList("MD5", "SHA-1", "SHA-256"));
@@ -70,10 +68,13 @@ public class IdenticonGeneratorController {
         foregroundColorPicker.setOnAction(event -> updatePreview());
         backgroundColorPicker.setOnAction(event -> updatePreview());
 
-        foregroundCheckBox.selectedProperty().addListener(new CheckBoxChangeListener(foregroundColorPicker, Color.WHITE));
-        backgroundCheckBox.selectedProperty().addListener(new CheckBoxChangeListener(backgroundColorPicker, Color.BLACK));
+        foregroundCheckBox.selectedProperty()
+                .addListener(new CheckBoxChangeListener(foregroundColorPicker, Color.WHITE));
+        backgroundCheckBox.selectedProperty()
+                .addListener(new CheckBoxChangeListener(backgroundColorPicker, Color.BLACK));
 
-        qualityTextField.textProperty().addListener(new NumbersOnlyChangeListener());
+        qualityTextField.textProperty()
+                .addListener(new NumbersOnlyChangeListener());
 
     }
 
@@ -90,14 +91,10 @@ public class IdenticonGeneratorController {
         File file = fileChooser.showSaveDialog(null);
 
         if (identicon != null && file != null) {
-
-            int quality = qualityTextField.getText() == null || qualityTextField.getText().equals("") ?
-                    PREVIEW_SIZE : Integer.parseInt(qualityTextField.getText());
-
+            String _quality = qualityTextField.getText();
+            int quality = _quality.equals("") ? PREVIEW_SIZE : Integer.parseInt(_quality);
             Image image = scaleImage(identicon, quality);
-
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-
         }
     }
 
@@ -119,6 +116,7 @@ public class IdenticonGeneratorController {
             System.out.println(e.getMessage());
 
         }
+
         return messageDigest.digest(textToEncrypt.getBytes());
 
     }
@@ -142,14 +140,14 @@ public class IdenticonGeneratorController {
         int[] background = new int[]{r, g, b, a};
 
 
-        BufferedImage identicon = new BufferedImage(TOTAL_SIZE, TOTAL_SIZE, BufferedImage.TYPE_INT_ARGB);
-        WritableRaster raster = identicon.getRaster();
+        BufferedImage _identicon = new BufferedImage(TOTAL_SIZE, TOTAL_SIZE, BufferedImage.TYPE_INT_ARGB);
+        WritableRaster raster = _identicon.getRaster();
 
         // Draw Border
         for (int x = 0; x < TOTAL_SIZE; x++) {
             for (int y = 0; y < TOTAL_SIZE; y++) {
-                if (x == 0 || x == TOTAL_SIZE - 1 ||
-                    y == 0 || y == TOTAL_SIZE - 1) {
+                if (x < BORDER_SIZE || x >= TOTAL_SIZE - BORDER_SIZE ||
+                    y < BORDER_SIZE || y >= TOTAL_SIZE - BORDER_SIZE) {
                     raster.setPixel(x, y, background);
                 }
             }
@@ -157,17 +155,17 @@ public class IdenticonGeneratorController {
 
         // Draw Identicon
         for (int x = 0; x < ORIGINAL_SIZE; x++) {
-            int i = x < 3 ? x : 4 - x;
+            int i = x < 3 ? x : ORIGINAL_SIZE - 1 - x;
             for (int y = 0; y < ORIGINAL_SIZE; y++) {
                 if ((hashedText[i] >> y & 1) == 1) {
-                    raster.setPixel(x + 1, y + 1, foreground);
+                    raster.setPixel(x + BORDER_SIZE, y + BORDER_SIZE, foreground);
                 } else {
-                    raster.setPixel(x + 1, y + 1, background);
+                    raster.setPixel(x + BORDER_SIZE, y + BORDER_SIZE, background);
                 }
             }
         }
 
-        return identicon;
+        return _identicon;
 
     }
 
@@ -176,8 +174,9 @@ public class IdenticonGeneratorController {
         BufferedImage scaledImage = new BufferedImage(scaleSize, scaleSize, BufferedImage.TYPE_INT_ARGB);
 
         AffineTransform transform = new AffineTransform();
-        int scale = scaleSize / TOTAL_SIZE;
-        transform.scale(scale, scale);
+        int scaleX = scaleSize / image.getWidth();
+        int scaleY = scaleSize / image.getHeight();
+        transform.scale(scaleX, scaleY);
 
         AffineTransformOp transformOp = new AffineTransformOp(transform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
         scaledImage = transformOp.filter(image, scaledImage);
@@ -187,11 +186,11 @@ public class IdenticonGeneratorController {
 
     private class CheckBoxChangeListener implements ChangeListener<Boolean> {
 
-        ColorPicker colorPicker;
-        Color defaultColor;
+        private ColorPicker colorPicker;
+        private Color defaultColor;
 
         CheckBoxChangeListener(ColorPicker colorPicker, Color defaultColor) {
-            this.colorPicker = colorPicker;
+            this.colorPicker  = colorPicker;
             this.defaultColor = defaultColor;
         }
 
