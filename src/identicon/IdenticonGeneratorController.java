@@ -112,7 +112,8 @@ public class IdenticonGeneratorController {
         identicon.setIdenticonPixels(pixels.equals("") ? 0 : Integer.parseInt(pixels));
         identicon.generateIdenticon();
 
-        identicon.setImagePixels(PREVIEW_SIZE);
+        int size = identicon.getTotalPixels() > PREVIEW_SIZE ? identicon.getTotalPixels() : PREVIEW_SIZE;
+        identicon.setImagePixels(size);
         identicon.generateImage();
         identiconImageView.setImage(identicon.getImage());
 

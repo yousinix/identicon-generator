@@ -151,6 +151,10 @@ public class Identicon {
 
     //// Getter and Setters ////
 
+    public int getTotalPixels() {
+        return totalPixels;
+    }
+
     public Image getImage() {
         return image;
     }
