@@ -1,7 +1,5 @@
 package identicon;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,15 +31,14 @@ public class IdenticonGeneratorController {
     public void initialize() {
 
         identicon = Identicon.getInstance();
+        IUpdateStrategy updateStrategy = this::updatePreview;
 
         // Set Preview Dimensions & PlaceHolder Image
-
         identiconImageView.setFitHeight(PREVIEW_SIZE);
         identiconImageView.setFitWidth(PREVIEW_SIZE);
         identiconImageView.setImage(identicon.getImage());
 
         // Initial Values
-
         hashingAlgorithmsComboBox.setItems(FXCollections.observableArrayList("MD5", "SHA-1", "SHA-256"));
         hashingAlgorithmsComboBox.getSelectionModel().select(0);
         foregroundColorPicker.setValue(null);
@@ -62,12 +59,12 @@ public class IdenticonGeneratorController {
         backgroundColorPicker.setOnAction(event -> updatePreview());
 
         foregroundCheckBox.selectedProperty()
-                .addListener(new CheckBoxChangeListener(foregroundColorPicker, Color.WHITE));
+                .addListener(new CheckBoxChangeListener(foregroundColorPicker, Color.WHITE, updateStrategy));
         backgroundCheckBox.selectedProperty()
-                .addListener(new CheckBoxChangeListener(backgroundColorPicker, Color.BLACK));
+                .addListener(new CheckBoxChangeListener(backgroundColorPicker, Color.BLACK, updateStrategy));
 
         qualityTextField.textProperty()
-                .addListener(new NumbersOnlyChangeListener());
+                .addListener(new NumbersOnlyChangeListener(qualityTextField));
 
     }
 
@@ -107,40 +104,6 @@ public class IdenticonGeneratorController {
         identicon.generateImage();
         identiconImageView.setImage(identicon.getImage());
 
-    }
-
-
-    private class CheckBoxChangeListener implements ChangeListener<Boolean> {
-
-        private ColorPicker colorPicker;
-        private Color defaultColor;
-
-        CheckBoxChangeListener(ColorPicker colorPicker, Color defaultColor) {
-            this.colorPicker  = colorPicker;
-            this.defaultColor = defaultColor;
-        }
-
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            if (newValue) {
-                colorPicker.setValue(defaultColor);
-                colorPicker.setDisable(false);
-            } else {
-                colorPicker.setValue(null);
-                colorPicker.setDisable(true);
-            }
-            updatePreview();
-        }
-
-    }
-
-    private class NumbersOnlyChangeListener implements ChangeListener<String> {
-        @Override
-        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (!newValue.matches("\\d*")) {
-                qualityTextField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        }
     }
 
 }
